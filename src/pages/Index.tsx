@@ -65,6 +65,8 @@ const Index = () => {
   const [activeAnalysisTab, setActiveAnalysisTab] = useState('predictions');
   const [shouldPredict, setShouldPredict] = useState(false);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+
   const { toast } = useToast();
 
 
@@ -198,6 +200,7 @@ const Index = () => {
     console.log('Selected stock:', symbol);
     setSelectedStock(symbol);
     setShouldPredict(false); // Reset prediction state for new stock
+    setSearchInput(''); // Reset search input on selection
   };
 
   const generatePredictions = () => {
@@ -252,7 +255,13 @@ const Index = () => {
     <div className="flex h-screen bg-[#121319] overflow-hidden text-slate-300">
       <Sidebar activeTab={activeSidebarTab} onTabChange={setActiveSidebarTab} />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <Topbar selectedStock={selectedStock} onStockSelect={handleStockSelect} />
+        <Topbar 
+          selectedStock={selectedStock} 
+          onStockSelect={handleStockSelect} 
+          searchInput={searchInput}
+          onSearchInputChange={setSearchInput}
+        />
+
         
         <main className="flex-1 overflow-y-auto p-8 bg-[#121319]">
           <div className="container mx-auto space-y-8 max-w-7xl">
@@ -424,9 +433,15 @@ const Index = () => {
         {/* Welcome Card when no stock is selected */}
         {!stockData && (
           <div className="animate-fade-in mt-4">
-            <StockSelector popularStocks={popularStocks} onStockSelect={handleStockSelect} loading={loading} />
+            <StockSelector 
+              popularStocks={popularStocks} 
+              onStockSelect={handleStockSelect} 
+              loading={loading} 
+              searchTerm={searchInput}
+            />
           </div>
         )}
+
           </>
         )}
           </div>

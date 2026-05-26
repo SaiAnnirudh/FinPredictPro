@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Mail, Bell, Search } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopbarProps {
   selectedStock: string;
   onStockSelect: (stock: string) => void;
+  searchInput: string;
+  onSearchInputChange: (val: string) => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ selectedStock, onStockSelect }) => {
-  const [searchInput, setSearchInput] = useState('');
+export const Topbar: React.FC<TopbarProps> = ({ 
+  selectedStock, 
+  onStockSelect,
+  searchInput,
+  onSearchInputChange
+}) => {
+  const { userEmail } = useAuth();
+  
+  const displayName = userEmail 
+    ? userEmail.split('@')[0].replace(/[^a-zA-Z]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) 
+    : 'Guest';
+    
+  const initials = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'G';
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +40,7 @@ export const Topbar: React.FC<TopbarProps> = ({ selectedStock, onStockSelect }) 
           <input 
             type="text"
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={(e) => onSearchInputChange(e.target.value)}
             placeholder="Search stock symbol... (e.g. RELIANCE, TCS)"
             className="w-full bg-[#121319] border border-white/[0.05] rounded-xl pl-12 pr-4 h-12 text-white placeholder:text-slate-500 focus:outline-none focus:border-white/[0.1]"
           />
@@ -49,14 +63,15 @@ export const Topbar: React.FC<TopbarProps> = ({ selectedStock, onStockSelect }) 
         {/* User Profile */}
         <div className="flex items-center space-x-3 cursor-pointer">
           <div className="w-10 h-10 rounded-full overflow-hidden border border-white/[0.05] bg-emerald-600/20 flex items-center justify-center">
-            <span className="text-emerald-500 font-bold text-sm">JS</span>
+            <span className="text-emerald-500 font-bold text-sm">{initials}</span>
           </div>
           <div className="hidden md:block">
-            <div className="text-sm font-semibold text-white">John Smith</div>
-            <div className="text-xs text-slate-500">jsmith@predict.com</div>
+            <div className="text-sm font-semibold text-white">{displayName}</div>
+            <div className="text-xs text-slate-500">{userEmail || 'guest@predict.com'}</div>
           </div>
         </div>
       </div>
     </header>
   );
 };
+

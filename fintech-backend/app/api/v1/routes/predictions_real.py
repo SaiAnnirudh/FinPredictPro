@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 import pandas as pd
 from app.api.v1.models import PredictionResponse
-from app.db.models import HistoricalPrice, Stock
+from app.db.models import HistoricalPrice, Stock, Prediction
 from app.config import settings
 from app.external.real_stock_fetcher import RealStockDataFetcher
 from app.ml.training.quick_train_xgboost import train_xgboost_model
@@ -145,6 +145,18 @@ async def predict_real(symbol: str, background_tasks: BackgroundTasks, days_ahea
         volatility = np.std(recent_returns)
         confidence = max(0.5, min(1.0, 1 - volatility))
         
+        # Save prediction record to the database
+        with Session(engine) as session:
+            db_pred = Prediction(
+                symbol=symbol,
+                predicted_price=float(prediction_val),
+                days_ahead=int(days_ahead),
+                model_name=model_name,
+                confidence=float(confidence)
+            )
+            session.add(db_pred)
+            session.commit()
+
         return {
             "symbol": symbol,
             "currentPrice": float(current_price),
@@ -156,6 +168,7 @@ async def predict_real(symbol: str, background_tasks: BackgroundTasks, days_ahea
             "model": model_name,
             "source": "real_model"
         }
+
     except Exception as e:
         logger.error(f"Prediction error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

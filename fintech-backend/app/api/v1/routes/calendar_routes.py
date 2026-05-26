@@ -1,15 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from app.dependencies import get_db, get_current_active_user
 from app.db.models import User, CalendarEvent
 from app.api.v1.schemas import CalendarEventCreate, CalendarEventResponse
+from app.services.calendar_sync import sync_watchlist_events
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
 
 @router.get("", response_model=List[CalendarEventResponse])
-def get_events(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+def get_events(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+    background_tasks.add_task(sync_watchlist_events, current_user.id, db)
     return current_user.calendar_events
+
 
 @router.post("", response_model=CalendarEventResponse)
 def create_event(event: CalendarEventCreate, current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):

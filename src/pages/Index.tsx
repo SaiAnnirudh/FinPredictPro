@@ -17,6 +17,7 @@ import { WatchlistView } from '@/components/views/WatchlistView';
 import { CalendarView } from '@/components/views/CalendarView';
 import { AnalyticsView } from '@/components/views/AnalyticsView';
 import { SettingsView } from '@/components/views/SettingsView';
+import { HelpView } from '@/components/views/HelpView';
 import { useToast } from '@/hooks/use-toast';
 import { useStock, useHistorical, usePrediction } from '@/hooks/useStock';
 import { apiClient } from '@/api/client';
@@ -266,10 +267,14 @@ const Index = () => {
         <main className="flex-1 overflow-y-auto p-8 bg-[#121319]">
           <div className="container mx-auto space-y-8 max-w-7xl">
 
-        {activeSidebarTab === 'watchlist' && <WatchlistView />}
+        {activeSidebarTab === 'watchlist' && <WatchlistView onAnalyze={(symbol) => {
+          handleStockSelect(symbol);
+          setActiveSidebarTab('dashboard');
+        }} />}
         {activeSidebarTab === 'calendar' && <CalendarView />}
         {activeSidebarTab === 'analytics' && <AnalyticsView />}
         {activeSidebarTab === 'settings' && <SettingsView />}
+        {activeSidebarTab === 'help' && <HelpView />}
 
         {activeSidebarTab === 'dashboard' && (
           <>

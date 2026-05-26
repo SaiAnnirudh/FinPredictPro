@@ -5,7 +5,11 @@ import { Trash2, TrendingUp, Loader2 } from 'lucide-react';
 import { apiClient } from '@/api/client';
 import { toast } from 'sonner';
 
-export const WatchlistView = () => {
+interface WatchlistViewProps {
+  onAnalyze: (symbol: string) => void;
+}
+
+export const WatchlistView = ({ onAnalyze }: WatchlistViewProps) => {
   const [watchlist, setWatchlist] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +71,9 @@ export const WatchlistView = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-slate-400">Added on: {new Date(item.added_at).toLocaleDateString()}</p>
-                <Button className="w-full mt-4 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/20">
+                <Button 
+                  onClick={() => onAnalyze(item.symbol)}
+                  className="w-full mt-4 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/20">
                   Analyze Now
                 </Button>
               </CardContent>

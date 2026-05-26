@@ -1,4 +1,4 @@
-const BASE_URL = '/api/v1';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const getHeaders = () => {
   const token = localStorage.getItem('access_token');
@@ -54,15 +54,19 @@ export const apiClient = {
     return data;
   },
 
-  postForm: async (endpoint: string, formData: FormData) => {
+  postForm: async (endpoint: string, data: Record<string, string>) => {
     const token = localStorage.getItem('access_token');
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
     if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const formBody = new URLSearchParams(data).toString();
 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
       headers,
-      body: formData,
+      body: formBody,
     });
     
     if (!response.ok) {

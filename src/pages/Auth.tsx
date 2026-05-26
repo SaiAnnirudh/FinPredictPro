@@ -19,10 +19,10 @@ const Auth = () => {
     setLoading(true);
     try {
       if (isLogin) {
-        const formData = new FormData();
-        formData.append('username', email);
-        formData.append('password', password);
-        const data = await apiClient.postForm('/auth/token', formData);
+        const data = await apiClient.postForm('/auth/token', {
+          username: email,
+          password: password,
+        });
         login(data.access_token);
         toast.success('Successfully logged in');
       } else {

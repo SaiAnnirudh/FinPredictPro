@@ -36,12 +36,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
     <aside className="w-64 bg-[#1a1c23] border-r border-white/[0.05] flex flex-col h-screen flex-shrink-0">
       {/* Logo */}
       <div className="h-20 flex items-center px-8">
-        <div className="flex items-center space-x-3">
+        <button 
+          onClick={() => onTabChange('dashboard')}
+          className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus:outline-none"
+        >
           <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
             <Brain className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-white">FinPredict</span>
-        </div>
+          <span className="text-xl font-bold text-white">FinPredict<span className="text-emerald-500">Pro</span></span>
+        </button>
       </div>
 
       {/* Navigation */}

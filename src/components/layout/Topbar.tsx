@@ -58,19 +58,40 @@ export const Topbar: React.FC<TopbarProps> = ({
     window.location.href = "mailto:ts.saiannirudh@gmail.com";
   };
 
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <header className="h-20 bg-[#1a1c23] border-b border-white/[0.05] flex items-center justify-between px-8 flex-shrink-0 z-10">
       {/* Search Area */}
-      <div className="flex-1 max-w-xl">
-        <form onSubmit={handleSearch} className="relative">
+      <div className="flex-1 max-w-2xl lg:ml-8">
+        <form onSubmit={handleSearch} className="relative group">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+            <Search className="w-5 h-5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
+          </div>
           <input 
+            ref={searchInputRef}
             type="text"
             value={searchInput}
             onChange={(e) => onSearchInputChange(e.target.value)}
-            placeholder="Search stock symbol... (e.g. RELIANCE, TCS)"
-            className="w-full bg-[#121319] border border-white/[0.05] rounded-xl pl-12 pr-4 h-12 text-white placeholder:text-slate-500 focus:outline-none focus:border-white/[0.1]"
+            placeholder="Search for Indian stocks... (e.g. RELIANCE, TCS)"
+            className="w-full bg-[#121319] hover:bg-white/[0.02] border border-white/[0.05] rounded-xl pl-12 pr-16 h-12 text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 focus:bg-[#121319] transition-all shadow-sm"
           />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded border border-white/[0.1] bg-white/[0.02] px-2 text-[10px] font-medium text-slate-400 group-focus-within:text-emerald-400/70 group-focus-within:border-emerald-500/30 transition-colors">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </div>
         </form>
       </div>
 

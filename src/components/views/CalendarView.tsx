@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar as CalendarIcon, Loader2, Trash2, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, Trash2, Plus, RefreshCw } from 'lucide-react';
 import { apiClient } from '@/api/client';
 import { toast } from 'sonner';
 
 export const CalendarView = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -21,6 +22,18 @@ export const CalendarView = () => {
       toast.error('Failed to load events');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchEvents();
+      toast.success('Calendar refreshed and updated');
+    } catch (error) {
+      toast.error('Failed to refresh calendar');
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -60,10 +73,22 @@ export const CalendarView = () => {
           <h2 className="text-3xl font-bold text-white">Financial Calendar</h2>
           <p className="text-slate-400 mt-1">Track earnings, dividends, and market events</p>
         </div>
-        <Button onClick={addMockEvent} className="bg-emerald-600 hover:bg-emerald-700 text-white border-0">
-          <Plus className="w-4 h-4 mr-2" /> Add Event
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={handleRefresh} 
+            disabled={refreshing}
+            variant="outline" 
+            className="border-white/[0.05] bg-black/20 text-slate-300 hover:text-white hover:bg-white/5"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            Sync & Refresh
+          </Button>
+          <Button onClick={addMockEvent} className="bg-emerald-600 hover:bg-emerald-700 text-white border-0">
+            <Plus className="w-4 h-4 mr-2" /> Add Event
+          </Button>
+        </div>
       </div>
+
 
       {events.length === 0 ? (
         <Card className="glass-card border-0">

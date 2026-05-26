@@ -19,6 +19,8 @@ import { AnalyticsView } from '@/components/views/AnalyticsView';
 import { SettingsView } from '@/components/views/SettingsView';
 import { useToast } from '@/hooks/use-toast';
 import { useStock, useHistorical, usePrediction } from '@/hooks/useStock';
+import { apiClient } from '@/api/client';
+
 
 interface StockData {
   symbol: string;
@@ -62,7 +64,9 @@ const Index = () => {
   const [activeSidebarTab, setActiveSidebarTab] = useState('dashboard');
   const [activeAnalysisTab, setActiveAnalysisTab] = useState('predictions');
   const [shouldPredict, setShouldPredict] = useState(false);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
   const { toast } = useToast();
+
 
   const { data: realStockData, isLoading: loadingStock, error: stockError } = useStock(selectedStock);
   const { data: realHistoricalData, isLoading: loadingHistorical } = useHistorical(selectedStock, 30);
@@ -202,6 +206,48 @@ const Index = () => {
     fetchPrediction();
   };
 
+  useEffect(() => {
+    const checkWatchlistStatus = async () => {
+      if (!selectedStock) return;
+      try {
+        const watchlist = await apiClient.get('/watchlist');
+        const exists = watchlist.some((item: any) => item.symbol === selectedStock);
+        setIsInWatchlist(exists);
+      } catch (error) {
+        console.error('Failed to fetch watchlist status', error);
+      }
+    };
+    checkWatchlistStatus();
+  }, [selectedStock]);
+
+  const toggleWatchlist = async () => {
+    if (!selectedStock) return;
+    try {
+      if (isInWatchlist) {
+        await apiClient.delete(`/watchlist/${selectedStock}`);
+        setIsInWatchlist(false);
+        toast({
+          title: "Removed from Watchlist",
+          description: `${selectedStock} has been removed from your watchlist.`,
+        });
+      } else {
+        await apiClient.post('/watchlist', { symbol: selectedStock });
+        setIsInWatchlist(true);
+        toast({
+          title: "Added to Watchlist",
+          description: `${selectedStock} has been added to your watchlist.`,
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update watchlist.",
+      });
+    }
+  };
+
+
   return (
     <div className="flex h-screen bg-[#121319] overflow-hidden text-slate-300">
       <Sidebar activeTab={activeSidebarTab} onTabChange={setActiveSidebarTab} />
@@ -220,9 +266,36 @@ const Index = () => {
           <>
         {/* Stock Information */}
         {stockData && (
-          <Card className="glass-card animate-fade-in">
-            <CardContent className="p-6">
+          <Card className="glass-card animate-fade-in border-white/[0.05] bg-[#1a1c23]">
+            <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/[0.05]">
+              <div className="space-y-1">
+                <CardTitle className="text-2xl font-bold text-white flex items-center gap-2">
+                  {selectedStock}
+                  <Badge variant="outline" className="text-xs bg-slate-800 text-slate-300 border-white/[0.05]">
+                    {popularStocks.find(s => s.symbol === selectedStock)?.sector || 'Stock'}
+                  </Badge>
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  {popularStocks.find(s => s.symbol === selectedStock)?.name || 'Indian Stock'}
+                </CardDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={toggleWatchlist} 
+                className={`flex items-center gap-2 rounded-full border border-white/[0.05] transition-all ${
+                  isInWatchlist 
+                    ? 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 border-yellow-500/30' 
+                    : 'bg-black/20 text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Star className={`w-4 h-4 ${isInWatchlist ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+                {isInWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+              </Button>
+            </CardHeader>
+            <CardContent className="p-6 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <DollarSign className="w-5 h-5 text-blue-400" />

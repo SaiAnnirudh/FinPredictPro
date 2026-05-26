@@ -1,4 +1,4 @@
-# 🚀 FinPredict Pro
+# <img src="public/favicon.svg" width="40" height="40" align="center" /> FinPredict Pro
 
 **FinPredict Pro** is a state-of-the-art AI-powered market intelligence and predictive analysis platform for Indian stocks. It uses advanced machine learning models (LSTM, XGBoost) to forecast stock price trends, combined with a beautiful, modern React frontend.
 
@@ -75,12 +75,6 @@ This project is configured for full-stack production deployment.
 
 ---
 
-## Documentation
-Legacy planning and architectural guides are available in the `docs/` folder:
-* `fintech_complete_guide.md`
-* `fintech_quickstart.md`
-* `fintech_code_snippets.md`
-* `fintech_analysis.md`
-
 ## 👨‍💻 Author
 Created by Sai Annirudh
+

@@ -261,6 +261,7 @@ const Index = () => {
           onStockSelect={handleStockSelect} 
           searchInput={searchInput}
           onSearchInputChange={setSearchInput}
+          onTabChange={setActiveSidebarTab}
         />
 
         

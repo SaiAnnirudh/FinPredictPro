@@ -10,6 +10,7 @@ from app.api.v1.routes.settings import router as settings_router
 from app.api.v1.routes.analytics import router as analytics_router
 from app.db.models import Base
 from app.db.database import engine
+import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

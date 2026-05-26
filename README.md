@@ -2,7 +2,7 @@
 
 **FinPredict Pro** is a state-of-the-art AI-powered market intelligence and predictive analysis platform for Indian and Global stocks. It uses advanced machine learning models (LSTM, XGBoost) to forecast stock price trends, combined with a beautiful, modern React frontend.
 
-## ✨ Features
+## Features
 * **Real-time Stock Data & Analytics**: Integrates live stock market data via API.
 * **AI Machine Learning Predictions**: Employs LSTM and XGBoost models running on a Python/FastAPI backend to forecast 30-day stock movements.
 * **Corporate Events Calendar**: Automatic tracking of dividend announcements, stock splits, and earnings calls based on your watchlist.
@@ -10,7 +10,7 @@
 * **Personalized Watchlist**: Seamlessly track your favorite stocks.
 * **Responsive Dashboard UI**: A premium, dark-mode focused glassmorphic user interface built with React, Vite, and Tailwind CSS.
 
-## 🏗️ Architecture
+## Architecture
 * **Frontend**: React 18, Vite, Tailwind CSS, Recharts, Lucide Icons
 * **Backend**: FastAPI (Python), SQLAlchemy, Passlib (JWT Auth)
 * **Database**: PostgreSQL (Production) / SQLite (Local Development)
@@ -18,7 +18,7 @@
 
 ---
 
-## 🚀 Local Development Setup
+## Local Development Setup
 
 ### 1. Backend Setup (FastAPI)
 The backend is located in the `fintech-backend` directory.
@@ -54,7 +54,7 @@ Visit `http://localhost:8080` in your browser. You can register a new account or
 
 ---
 
-## 🌐 Production Deployment (Railway & Vercel)
+## Production Deployment (Railway & Vercel)
 
 This project is configured for full-stack production deployment.
 
@@ -75,7 +75,7 @@ This project is configured for full-stack production deployment.
 
 ---
 
-## 📚 Documentation
+## Documentation
 Legacy planning and architectural guides are available in the `docs/` folder:
 * `fintech_complete_guide.md`
 * `fintech_quickstart.md`

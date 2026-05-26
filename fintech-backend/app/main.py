@@ -8,10 +8,14 @@ from app.api.v1.routes.watchlist import router as watchlist_router
 from app.api.v1.routes.calendar_routes import router as calendar_router
 from app.api.v1.routes.settings import router as settings_router
 from app.api.v1.routes.analytics import router as analytics_router
-import logging
+from app.db.models import Base
+from app.db.database import engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Create database tables automatically
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FinPredict Pro API")
 stock_fetcher = RealStockDataFetcher(settings.ALPHA_VANTAGE_KEY)
